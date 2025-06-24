@@ -1,5 +1,9 @@
-# This file makes Python treat the directory as a package
-from .base import Base
-from .task import Task  # noqa
+"""
+Database models package.
+"""
 
-__all__ = ["Base", "Task"]
+from app.db_models.base import Base
+from app.db_models.user import User
+# from app.db_models.task import Task  # Uncomment when task model is implemented
+
+__all__ = ["Base", "User", "Task"]

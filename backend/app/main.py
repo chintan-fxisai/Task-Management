@@ -78,7 +78,7 @@ app = FastAPI(
     debug=True
 )
 
-# Configure logging
+# Logging configuration provides a way to log messages from the application to the terminal [INFO, DEBUG, WARNING, ERROR, CRITICAL]
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

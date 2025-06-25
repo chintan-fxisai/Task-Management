@@ -124,7 +124,7 @@ async def startup():
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Task Management API"}
+    return {"message": "Welcome to Task Management Application"}
 
 @app.get("/health")
 async def health_check():

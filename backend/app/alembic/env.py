@@ -1,9 +1,19 @@
+import os
+import sys
 from logging.config import fileConfig
+from pathlib import Path
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+
+# Add the project root directory to the Python path
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
+# Import your models
+from app.db_models.base import Base
+from app.db_models.user import User
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -16,9 +26,7 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -55,13 +63,20 @@ def run_migrations_online() -> None:
 
     In this scenario we need to create an Engine
     and associate a connection with the context.
-
     """
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    from app.database import DATABASE_URL, engine
+    
+    configuration = config.get_section(config.config_ini_section)
+    
+    # Use the engine from database.py directly
+    connectable = engine
+    
+    # If you need to create a new engine instead of using the existing one:
+    # connectable = engine_from_config(
+    #     configuration,
+    #     prefix="sqlalchemy.",
+    #     poolclass=pool.NullPool,
+    # )
 
     with connectable.connect() as connection:
         context.configure(

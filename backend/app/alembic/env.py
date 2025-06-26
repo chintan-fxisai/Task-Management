@@ -9,11 +9,10 @@ from sqlalchemy import pool
 from alembic import context
 
 # Add the project root directory to the Python path
-sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-# Import your models
-from app.db_models.base import Base
-from app.db_models.user import User
+# Import your models' Base metadata
+from db_models.base import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -24,8 +23,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
+# Import your models' Base metadata
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -44,7 +42,6 @@ def run_migrations_offline() -> None:
 
     Calls to context.execute() here emit the given string to the
     script output.
-
     """
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
@@ -52,6 +49,8 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
+        compare_server_default=True
     )
 
     with context.begin_transaction():
@@ -64,23 +63,18 @@ def run_migrations_online() -> None:
     In this scenario we need to create an Engine
     and associate a connection with the context.
     """
-    from app.database import DATABASE_URL, engine
-    
-    configuration = config.get_section(config.config_ini_section)
-    
-    # Use the engine from database.py directly
-    connectable = engine
-    
-    # If you need to create a new engine instead of using the existing one:
-    # connectable = engine_from_config(
-    #     configuration,
-    #     prefix="sqlalchemy.",
-    #     poolclass=pool.NullPool,
-    # )
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, 
+            target_metadata=target_metadata,
+            compare_type=True,
+            compare_server_default=True
         )
 
         with context.begin_transaction():

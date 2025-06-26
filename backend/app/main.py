@@ -1,18 +1,15 @@
-from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 import logging
 import traceback
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
-from sqlalchemy.orm import Session
 import os
 import time
 import threading
 from datetime import datetime
 from dotenv import load_dotenv
-from typing import Dict, Any
-
 from app.database import engine, get_db
 from app.routers.auth_router import router as auth_router
 from app.routers.protected_router import router as protected_router

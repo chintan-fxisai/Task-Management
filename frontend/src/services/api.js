@@ -23,9 +23,11 @@ api.interceptors.response.use(
 export const authAPI = {
   register_user: async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData);
+      const response = await api.post('http://127.0.0.1:8000/auth/register', userData);
+      console.log(response.data);
       return response.data;
     } catch (error) {
+      console.log(error);
       throw error;
     }
   },

@@ -51,6 +51,10 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
+
+            localStorage.setItem('user', JSON.stringify(formData));
+            navigate('/dashboard');
+
             console.log('Login submitted:', formData);
             // Handle login logic here
         }

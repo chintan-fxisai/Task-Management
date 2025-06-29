@@ -23,10 +23,11 @@ const Signup = () => {
 
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
-        fullName: '',
+        full_name: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        role: 'employee'  // Default role
     });
     const [errors, setErrors] = useState({});
 
@@ -41,8 +42,8 @@ const Signup = () => {
     const validateForm = () => {
         const newErrors = {};
 
-        if (!formData.fullName.trim()) {
-            newErrors.fullName = 'Full name is required';
+        if (!formData.full_name.trim()) {
+            newErrors.full_name = 'Full name is required';
         }
 
         if (!formData.email) {
@@ -76,16 +77,24 @@ const Signup = () => {
 
         try {
             const { confirmPassword, ...userData } = formData;
-            await authAPI.register_user(userData);
+            // Ensure we're sending the correct field names
+            const formattedData = {
+                full_name: formData.full_name,
+                email: formData.email,
+                password: formData.password,
+                role: formData.role
+            };
+            await authAPI.register_user(formattedData);
 
             toast.success('Account created successfully! Redirecting to login...');
 
             // Reset form
             setFormData({
-                fullName: '',
+                full_name: '',
                 email: '',
                 password: '',
-                confirmPassword: ''
+                confirmPassword: '',
+                role: 'employee'
             });
 
             // Redirect to login after a short delay
@@ -142,15 +151,15 @@ const Signup = () => {
                             margin="normal"
                             required
                             fullWidth
-                            id="fullName"
+                            id="full_name"
                             label="Full Name"
-                            name="fullName"
+                            name="full_name"
                             autoComplete="name"
                             autoFocus
-                            value={formData.fullName}
+                            value={formData.full_name}
                             onChange={handleChange}
-                            error={!!errors.fullName}
-                            helperText={errors.fullName}
+                            error={!!errors.full_name}
+                            helperText={errors.full_name}
                             sx={{ mb: 2 }}
                         />
 

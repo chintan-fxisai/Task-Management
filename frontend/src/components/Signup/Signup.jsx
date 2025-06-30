@@ -14,7 +14,7 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router';
 import { Link as MuiLink } from '@mui/material';
-import { authAPI } from '../../services/api';
+import authAPI from '../../services/authApi';
 import { toast } from 'react-toastify';
 
 const Signup = () => {
@@ -69,6 +69,8 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // console.log(formData);
+
         if (!validateForm()) {
             return;
         }
@@ -86,7 +88,7 @@ const Signup = () => {
             };
             await authAPI.register_user(formattedData);
 
-            toast.success('Account created successfully! Redirecting to login...');
+            toast.success('Account created successfully!');
 
             // Reset form
             setFormData({

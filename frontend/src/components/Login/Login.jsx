@@ -13,6 +13,9 @@ import {
     Link as MuiLink,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import authAPI from '../../services/authApi';
+import { toast } from 'react-toastify';
+import { add_to_localestorage } from '../../services/authServices';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -48,15 +51,25 @@ const Login = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validateForm()) {
+        if (!validateForm()) return;
 
-            localStorage.setItem('user', JSON.stringify(formData));
-            navigate('/dashboard');
-
-            console.log('Login submitted:', formData);
-            // Handle login logic here
+        try {
+            const result = await authAPI.login_user(formData);
+            console.log(result);
+            if (result.success) {
+                add_to_localestorage(result.data);
+                toast.success('Login successful');
+                navigate('/dashboard');
+            } else {
+                toast.error(result.message || 'Login failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            toast.error('An unexpected error occurred. Please try again.');
         }
     };
 

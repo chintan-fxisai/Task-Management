@@ -7,12 +7,12 @@ import traceback
 from app.database import get_db
 from app.db_models.user import User
 from app.api_schemas.user import UserRegister, UserRegisterResponse, UserLogin
-from app.helpers.password_hash import hashed_password, verify_password, create_access_token
+from app.helpers.password_hash import hashed_password, verify_password, create_access_token, create_refresh_token
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
-    prefix="/auth",
+    prefix="/api",
     tags=["Authentication"],
     responses={404: {"description": "Not found"}},
 )
@@ -90,8 +90,13 @@ async def login_user(
                 data={"sub": str(user.id), "role": user.role}
             )
             
+            refresh_token = create_refresh_token(
+                data={"sub": str(user.id), "role": user.role}
+            )
+
             response_data = {
                 "access_token": access_token,
+                "refresh_token": refresh_token,
                 "token_type": "bearer",
                 "user": {
                     "id": user.id,

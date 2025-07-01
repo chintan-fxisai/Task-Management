@@ -2,14 +2,15 @@ import React from 'react';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { clear_localestorage } from '../../services/authServices';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/Slices/AuthSlice';
 
-const LogoutButton = ({ onLogout }) => {
+const LogoutButton = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleLogout = () => {
-        // Remove user data from localStorage
-        clear_localestorage();
+        dispatch(logout());
 
         // Show success message
         toast.success('Logged out successfully');
@@ -17,10 +18,6 @@ const LogoutButton = ({ onLogout }) => {
         // Navigate to login page
         navigate('/login');
 
-        // Call the onLogout callback if provided
-        if (onLogout && typeof onLogout === 'function') {
-            onLogout();
-        }
     };
 
     return (

@@ -34,16 +34,16 @@ def decode_access_token(token: str):
     except JWTError:
         return None
 
-def create_refresh_token(data: dict):
-    to_encode = data.copy()
-    expire = datetime.now() + timedelta(days=int(REFRESH_ACCESS_TOKEN_EXPIRE_DAYS))
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, REFRESH_SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+# def create_refresh_token(data: dict):
+#     to_encode = data.copy()
+#     expire = datetime.now() + timedelta(days=int(REFRESH_ACCESS_TOKEN_EXPIRE_DAYS))
+#     to_encode.update({"exp": expire})
+#     encoded_jwt = jwt.encode(to_encode, REFRESH_SECRET_KEY, algorithm=ALGORITHM)
+#     return encoded_jwt
 
-def decode_refresh_token(token: str):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
-    except JWTError:
-        return None
+# def decode_refresh_token(token: str):
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         return payload
+#     except JWTError:
+#         return None

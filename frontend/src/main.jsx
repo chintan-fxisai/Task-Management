@@ -7,6 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import theme from './utils/theme';
 import App from './App';
 import './index.css';
+import { store } from './redux/Store/store';
+import { Provider } from 'react-redux';
+
 
 const root = createRoot(document.getElementById('root'));
 
@@ -14,7 +17,9 @@ root.render(
 
   <ThemeProvider theme={theme}>
     <CssBaseline />
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
     <ToastContainer
       position="top-right"
       autoClose={3000}

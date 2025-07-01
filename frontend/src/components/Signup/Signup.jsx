@@ -9,18 +9,20 @@ import {
     FormControl,
     InputAdornment,
     IconButton,
-    useTheme
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router';
 import { Link as MuiLink } from '@mui/material';
 import authAPI from '../../services/authApi';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { register_success, register_fail } from '../../redux/Slices/AuthSlice';
+
 
 const Signup = () => {
+
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
-
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         full_name: '',
@@ -30,6 +32,7 @@ const Signup = () => {
         role: 'employee'  // Default role
     });
     const [errors, setErrors] = useState({});
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -77,18 +80,19 @@ const Signup = () => {
 
         setIsSubmitting(true);
 
-        try {
-            const { confirmPassword, ...userData } = formData;
-            // Ensure we're sending the correct field names
-            const formattedData = {
-                full_name: formData.full_name,
-                email: formData.email,
-                password: formData.password,
-                role: formData.role
-            };
-            await authAPI.register_user(formattedData);
+        const { confirmPassword, ...userData } = formData;
+        // Ensure we're sending the correct field names
+        const formattedData = {
+            full_name: formData.full_name,
+            email: formData.email,
+            password: formData.password,
+            role: formData.role
+        };
+        const result = await authAPI.register_user(formattedData);
 
+        if (result.success) {
             toast.success('Account created successfully!');
+            dispatch(register_success())
 
             // Reset form
             setFormData({
@@ -103,12 +107,11 @@ const Signup = () => {
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
-
-        } catch (error) {
-            // Error is already handled by the axios interceptor
-            console.error('Signup error:', error);
-        } finally {
+        } else {
+            toast.error(result.message || 'Failed to create account');
+            dispatch(register_fail())
             setIsSubmitting(false);
+            console.log()
         }
     };
 

@@ -16,6 +16,8 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import authAPI from '../../services/authApi';
 import { toast } from 'react-toastify';
 import { add_to_localestorage } from '../../services/authServices';
+import { useDispatch } from 'react-redux';
+import { login_success, login_fail } from '../../redux/Slices/AuthSlice';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +27,7 @@ const Login = () => {
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -59,17 +62,25 @@ const Login = () => {
 
         try {
             const result = await authAPI.login_user(formData);
-            console.log(result);
+            // console.log(result);
+
             if (result.success) {
                 add_to_localestorage(result.data);
+                dispatch(login_success(result.data));
+
+
                 toast.success('Login successful');
+
                 navigate('/dashboard');
+
             } else {
                 toast.error(result.message || 'Login failed. Please try again.');
+                dispatch(login_fail());
             }
         } catch (error) {
             console.error('Login error:', error);
             toast.error('An unexpected error occurred. Please try again.');
+            dispatch(login_fail());
         }
     };
 
